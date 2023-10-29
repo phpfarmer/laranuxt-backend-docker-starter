@@ -1,0 +1,120 @@
+version: "3"
+services:
+  #PHP Service
+  app:
+    container_name: ${COMPOSE_PROJECT_NAME}_laravel_backend
+    restart: unless-stopped
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    volumes:
+      - ${PROJECT_BASE_DIR}:${WORK_DIR}
+    environment:
+      - "APP_DEBUG=true"
+      - "DB_HOST=database"
+      - "XDEBUG_MODE=${PROJECT_XDEBUG_MODE:-off}"
+      - "XDEBUG_CONFIG=${PROJECT_XDEBUG_CONFIG:-client_host=host.docker.internal}"
+    networks:
+      - ${COMPOSE_PROJECT_NAME}-network
+    depends_on:
+      - database
+      - cache
+
+  #Visit the application at: http://localhost:8089/
+  webserver:
+    container_name: ${COMPOSE_PROJECT_NAME}_nginx_webserver
+    image: nginx:alpine
+    restart: unless-stopped
+    volumes:
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - ../storage/logs/:/var/log/nginx
+      - ../public/:/var/www/public
+    ports:
+      - "8089:80"
+    networks:
+      - ${COMPOSE_PROJECT_NAME}-network
+
+  #TCP connection from outsize of docker using host:port: localhost:8999
+  database:
+    container_name: ${COMPOSE_PROJECT_NAME}_mysql_database
+    restart: unless-stopped
+    image: mariadb:10.6
+    volumes:
+      - ./.dbdata:/var/lib/mysql
+      - ./mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    networks:
+      - ${COMPOSE_PROJECT_NAME}-network
+    ports:
+      - "8999:3306"
+
+  #Visit local phpmyadmin at: http://127.0.0.1:8088/
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: ${COMPOSE_PROJECT_NAME}_database_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - 8088:80
+    networks:
+      - ${COMPOSE_PROJECT_NAME}-network
+    environment:
+      PMA_HOST: "database"
+      PMA_USER: ${MYSQL_ROOT_USER}
+      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+
+  cache:
+    image: redis:5-alpine
+    container_name: ${COMPOSE_PROJECT_NAME}_laravel_backend_cache
+    restart: unless-stopped
+    volumes:
+      - redisdata:/data
+    command: redis-server --save 60 1 --loglevel warning
+    networks:
+      - ${COMPOSE_PROJECT_NAME}-network
+    ports:
+      - "6377:6379"
+
+  #Access Redis commander at: http://localhost:8086/
+  redis-commander:
+    container_name: ${COMPOSE_PROJECT_NAME}_redis_commander
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    restart: unless-stopped
+    depends_on:
+      - cache
+    environment:
+      - REDIS_HOSTS=Database:cache:6379:0,Cache:cache:6379:1,Queue:cache:6379:2
+    ports:
+      - "8086:8081"
+    networks:
+      - ${COMPOSE_PROJECT_NAME}-network
+
+  #Visit local mail at: http://127.0.0.1:8087/
+  mail:
+    container_name: ${COMPOSE_PROJECT_NAME}_local_mail
+    image: rnwood/smtp4dev:3.1.3-ci20211206101
+    restart: unless-stopped
+    ports:
+      - "8087:80"
+    volumes:
+      - mail:/smtp4dev
+    networks:
+      - ${COMPOSE_PROJECT_NAME}-network
+
+#Docker Networks
+networks:
+  laranuxt-network:
+    driver: bridge
+
+#Volumes
+volumes:
+  dbdata:
+    driver: local
+  redisdata:
+    driver: local
+  mail:
+    driver: local
