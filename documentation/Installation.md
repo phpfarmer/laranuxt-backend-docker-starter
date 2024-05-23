@@ -42,7 +42,7 @@ the following command:
 docker exec -it laranuxt_laravel_backend bash
 ```
 
-Once inside the app container, execute these commands:
+Once inside the app container, anytime you can execute artisan commands like these:
 
 - `composer install`
 - `php artisan key:generate`
