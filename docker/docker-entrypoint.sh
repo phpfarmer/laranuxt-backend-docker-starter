@@ -10,5 +10,8 @@ php artisan key:generate --force
 php artisan config:cache
 php artisan route:cache
 
+# Migrate PHPUnit configuration
+./vendor/bin/phpunit --migrate-configuration
+
 # Execute the original command passed to the container
 exec "$@"

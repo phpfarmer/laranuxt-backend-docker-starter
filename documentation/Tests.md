@@ -9,14 +9,15 @@ testing database and updated this `.env.testing.example` file properly.
 
 Run the automated testing
 
-    docker exec -it laranuxt_laravel_backend /var/www/artisan test
+    docker exec -it laranuxt_laravel_backend vendor/bin/phpunit
 
 ## Run Test from Inside docker container
 
 If your setup is based on Docker container, you can get inside the container first and run the test command
 
     docker exec -it laranuxt_laravel_backend bash
-    php artisan run
+    php artisan test
+    php artisan test --coverage-html=build/coverage
 
 It supposed to show you at least `x tests, x assertions` which has Unit and Feature tests all together as shown on below
 screenshot.
