@@ -31,6 +31,7 @@ application code and how much application code is used when running your tests. 
 the `--coverage` option when invoking the `test` command:
 
     php artisan test --coverage
+    php artisan test --coverage-html=build/coverage
 
 ### Enforcing A Minimum Coverage Threshold
 
@@ -46,6 +47,10 @@ fail if this threshold is not met:
 Example Output:
 
 ![Tests with Code Coverage](images/Coverage.png)
+
+If you build coverage html which can be found in: /build/coverage/index.html and open in a browser to see the output
+there.
+[Example Coverage Dashboard](Coverage.md)
 
 ### Profiling Tests
 
