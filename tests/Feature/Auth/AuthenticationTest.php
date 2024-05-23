@@ -14,6 +14,8 @@ class AuthenticationTest extends TestCase
     {
         $user = User::factory()->create();
 
+        $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class);
+
         $response = $this->post('/login', [
             'email' => $user->email,
             'password' => 'password',
