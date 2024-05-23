@@ -18,6 +18,8 @@ class PasswordResetTest extends TestCase
 
         $user = User::factory()->create();
 
+        $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class);
+
         $this->post('/forgot-password', ['email' => $user->email]);
 
         Notification::assertSentTo($user, ResetPassword::class);
@@ -28,6 +30,8 @@ class PasswordResetTest extends TestCase
         Notification::fake();
 
         $user = User::factory()->create();
+
+        $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class);
 
         $this->post('/forgot-password', ['email' => $user->email]);
 
