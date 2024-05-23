@@ -29,6 +29,9 @@ If it is first time building docker container, run below command to Build images
 docker-compose up --build
 ```
 
+and with this command you are done with the setup and should be above to visit the app it's related services like,
+phpmyadmin, redis commander, local smtp etc. Please refer to the bottom fo this page to see the visiting URLs.
+
 ## Accessing Container Shells
 
 You can access the shells of various containers as needed to perform specific tasks:
@@ -97,9 +100,8 @@ Once inside, you can use the redis-cli tool to run Redis commands. The basic syn
 
 ### Verifying Initial Setup
 
-If you've successfully executed the initial setup commands, you should see all the logs green and containers running.
+If you are successfully done the initial setup, you should see all the containers running.
 
-![ERD](images/Setup-Log.png)
 ![ERD](images/Docker-PS.png)
 
 ## Some useful docker commands
