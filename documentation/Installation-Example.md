@@ -1,9 +1,8 @@
-[Go Back](README.md)
+[Go Back](Installation.md)
 
-## Installation
+## Installation Example
 
-Please check the official laravel installation
-guide. [Official Documentation](https://laravel.com/docs/11.x/installation)
+Below is a step-by-step guide to installing this project. For this example, we'll name our project "ProjectX" and use "projectx" as the prefix for our Docker containers. Follow these steps to successfully install the application with the new project name and corresponding prefixes.
 
 Check and make sure you copied the `.env.example` to `.env` or it is already exists.
 
