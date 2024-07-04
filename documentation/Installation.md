@@ -3,7 +3,7 @@
 ## Installation
 
 Please check the official laravel installation
-guide. [Official Documentation](https://laravel.com/docs/10.x/installation)
+guide. [Official Documentation](https://laravel.com/docs/11.x/installation)
 
 Check and make sure you copied the `.env.example` to `.env` or it is already exists.
 
@@ -22,6 +22,8 @@ cp .env.example .env
 ```
 
 Whatever is the MySQL credentials you used needs to be used on application directory `/.env` file accordingly.
+
+You can follow the step-by-step installation guide here: [Example Installation](Installation-Example.md)
 
 If it is first time building docker container, run below command to Build images before starting containers.
 
