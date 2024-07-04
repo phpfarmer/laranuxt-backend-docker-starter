@@ -23,6 +23,8 @@ cp .env.example .env
 
 Whatever is the MySQL credentials you used needs to be used on application directory `/.env` file accordingly.
 
+You can follow the step-by-step installation guide here: [Example Installation](Installation-Example.md)
+
 If it is first time building docker container, run below command to Build images before starting containers.
 
 ```bash

@@ -4,129 +4,38 @@
 
 Below is a step-by-step guide to installing this project. For this example, we'll name our project "ProjectX" and use "projectx" as the prefix for our Docker containers. Follow these steps to successfully install the application with the new project name and corresponding prefixes.
 
-Check and make sure you copied the `.env.example` to `.env` or it is already exists.
+1. Navigate to the projectx directory.
+2. Copy the `.env.example` file to `.env` by running `cp .env.example .env`.
+3. Edit the `.env` file to set `APP_NAME`, `DB_PASSWORD`, and change the `APP_URL` port to `8381`.
+4. Navigate to the docker directory: `cd docker`.
+5. Copy the `.env.example` file to `.env` by running `cp .env.example .env`.
+6. Ensure that the `MYSQL_DATABASE` credentials in the docker `.env` file match those in the application `.env` file.
+7. Open `docker-compose.yaml` and verify that all ports are correct and not used by other services. Here are some example changes:
+   1. Change `webserver` port from `8281` to `8381`.
+   2. Change `database` port from `8299` to `8399`.
+   3. Change `phpMyAdmin` port from `8282` to `8382`.
+   4. Change `cache` port from `6279` to `6373` and ensure the `REDIS_PORT` in the application `.env` file matches.
+   5. Change `Redis Commander` port from `8283` to `8383`.
+   6. Change `mail` port from `8284` to `8384`.
+8. Find and replace all occurrences of `laranuxt` with `projectx` in a case-sensitive manner across the project directory.
+9. Find and replace all occurrences of `laranuxt` with `projectx` in a case-insensitive manner across the project directory.
+10. Manually replace all references to `Laranuxt` or the application name, including:
+    1. Application Name
+    2. Readme contents
+    3. GitHub repository URL
+11. Update the `License` section in the `README.md` file.
+12. Finally, run `docker-compose up --build`.
+13. You should now be able to view all the running applications:
+    1. Your ProjectX backend application will be available at `http://127.0.0.1:8381`.
+    2. Access PHPMyAdmin at `http://localhost:8382` for database management.
+    3. Access the SMTP Mail Server at `http://localhost:8384` for email.
+    4. Access Redis Commander at `http://localhost:8383` for Redis management.
 
-## Configure Docker
+This guide should help you set up your project correctly with the new name and port configurations.
 
-Change directory to the docker folder:
+If everything is done, make the initial git commit!
 
-```bash
-cd docker
-```
 
-Check if it has `.env` environment variables file already in place otherwise copy `.env.example` to create one `.env`
 
-```bash
-cp .env.example .env
-```
 
-Whatever is the MySQL credentials you used needs to be used on application directory `/.env` file accordingly.
 
-If it is first time building docker container, run below command to Build images before starting containers.
-
-```bash
-docker-compose up --build
-```
-
-and with this command you are done with the setup and should be above to visit the app it's related services like,
-phpmyadmin, redis commander, local smtp etc. Please refer to the bottom fo this page to see the visiting URLs.
-
-## Accessing Container Shells
-
-You can access the shells of various containers as needed to perform specific tasks:
-
-### App Container (Laranuxt Backend)
-
-To interact with the Laranuxt backend artisan and perform some initial setup tasks, enter into the app container with
-the following command:
-
-```bash
-docker exec -it laranuxt_laravel_backend bash
-```
-
-Once inside the app container, anytime you can execute artisan commands like these:
-
-- `composer install`
-- `php artisan key:generate`
-- `php artisan config:cache`
-- `php artisan route:cache`
-- `php artisan migrate`
-- `php artisan db:seed`
-
-### Web Server Container (Nginx)
-
-To access the webserver container, use this command:
-
-```bash
-docker exec -it laranuxt_nginx_webserver /bin/sh
-```
-
-### MySQL Database Container
-
-To access the MySQL container, use the following command:
-
-```bash
-docker exec -it laranuxt_nginx_webserver /bin/sh
-```
-
-**Example**: You may need to copy the database later from outside of the container to import it:
-
-```bash
-docker cp ~/Desktop/staging/database.sql laranuxt_mysql_database:/root/database.sql
-```
-
-Then, log in to MySQL and import the database:
-
-```bash
-mysql -u root -p   
-show databases;   
-mysql -u root -p PASSWORD < /root/database.sql   
-```
-
-### Redis Cache Container
-
-To access the Redis cache instance container, run:
-
-```bash
-docker exec -it laranuxt_laravel_backend_cache /bin/sh 
-```
-
-Once inside, you can use the redis-cli tool to run Redis commands. The basic syntax includes:
-
-- `redis-cli`
-- `SET key value [expiration EX seconds|PX milliseconds] [NX|XX]`
-- `GET key`
-
-### Verifying Initial Setup
-
-If you are successfully done the initial setup, you should see all the containers running.
-
-![ERD](images/Docker-PS.png)
-
-## Some useful docker commands
-
-- `docker ps` - List all running containers.
-- `docker ps --filter "name=laranuxt"` - List running containers filtered by name.
-- `docker stop container-name` - Stop a running container gracefully.
-- `docker kill container-name` - Forcefully stop a running container.
-- `docker restart container-name` - Restart a container.
-- `docker rm container-name` - Remove a stopped container.
-- `docker cp ~/Desktop/staging/database.sql laranuxt_mysql_database:/root/database.sql` - Copying a database inside
-  MySQL container to import it from inside the container later.
-
-## Stop all running container of the project
-
-```bash
-docker-compose down
-```
-
-## Visit different container on browser
-
-- [Application](http://127.0.0.1:8089)
-- [PHPMyAdmin](http://127.0.0.1:8088)
-- [Local SMTP4DEV](http://127.0.0.1:8087)
-- [Redis Commander](http://127.0.0.1:8086)
-
-### Documentation & Collaborations
-
-- [GitHub](https://github.com/phpfarmer/laranuxt-backend-docker-starter)
