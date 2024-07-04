@@ -19,7 +19,7 @@ services:
       - database
       - cache
 
-  #Visit the application at: http://localhost:8089/
+  #Visit the application at: http://localhost:8281/
   webserver:
     container_name: ${COMPOSE_PROJECT_NAME}_nginx_webserver
     image: nginx:alpine
@@ -29,11 +29,11 @@ services:
       - ../storage/logs/:/var/log/nginx
       - ../public/:/var/www/public
     ports:
-      - "8089:80"
+      - "8281:80"
     networks:
       - ${COMPOSE_PROJECT_NAME}-network
 
-  #TCP connection from outsize of docker using host:port: localhost:8999
+  #TCP connection from outsize of docker using host:port: localhost:8299
   database:
     container_name: ${COMPOSE_PROJECT_NAME}_mysql_database
     restart: unless-stopped
@@ -49,15 +49,15 @@ services:
     networks:
       - ${COMPOSE_PROJECT_NAME}-network
     ports:
-      - "8999:3306"
+      - "8299:3306"
 
-  #Visit local phpmyadmin at: http://127.0.0.1:8088/
+  #Visit local phpmyadmin at: http://127.0.0.1:8282/
   phpmyadmin:
     image: phpmyadmin
     container_name: ${COMPOSE_PROJECT_NAME}_database_phpmyadmin
     restart: unless-stopped
     ports:
-      - 8088:80
+      - 8282:80
     networks:
       - ${COMPOSE_PROJECT_NAME}-network
     environment:
@@ -75,9 +75,9 @@ services:
     networks:
       - ${COMPOSE_PROJECT_NAME}-network
     ports:
-      - "6377:6379"
+      - "6279:6379"
 
-  #Access Redis commander at: http://localhost:8086/
+  #Access Redis commander at: http://localhost:8283/
   redis-commander:
     container_name: ${COMPOSE_PROJECT_NAME}_redis_commander
     hostname: redis-commander
@@ -88,17 +88,17 @@ services:
     environment:
       - REDIS_HOSTS=Database:cache:6379:0,Cache:cache:6379:1,Queue:cache:6379:2
     ports:
-      - "8086:8081"
+      - "8283:8081"
     networks:
       - ${COMPOSE_PROJECT_NAME}-network
 
-  #Visit local mail at: http://127.0.0.1:8087/
+  #Visit local mail at: http://127.0.0.1:8284/
   mail:
     container_name: ${COMPOSE_PROJECT_NAME}_local_mail
     image: rnwood/smtp4dev:3.1.3-ci20211206101
     restart: unless-stopped
     ports:
-      - "8087:80"
+      - "8284:80"
     volumes:
       - mail:/smtp4dev
     networks:
