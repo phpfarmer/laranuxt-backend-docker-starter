@@ -1,5 +1,5 @@
 services:
-  #PHP Service
+  # PHP Service
   app:
     container_name: ${COMPOSE_PROJECT_NAME}_laravel_backend
     restart: unless-stopped
@@ -19,7 +19,7 @@ services:
       - database
       - cache
 
-  #Visit the application at: http://localhost:8281/
+  # Visit the application at: http://localhost:${PROJECT_PORT}/
   webserver:
     container_name: ${COMPOSE_PROJECT_NAME}_nginx_webserver
     image: nginx:alpine
@@ -29,11 +29,11 @@ services:
       - ../storage/logs/:/var/log/nginx
       - ../public/:/var/www/public
     ports:
-      - "8281:80"
+      - "${PROJECT_PORT}:80"
     networks:
       - ${COMPOSE_PROJECT_NAME}-network
 
-  #TCP connection from outsize of docker using host:port: localhost:8299
+  # TCP connection from outside of Docker using host:port: localhost:${MYSQL_PORT}
   database:
     container_name: ${COMPOSE_PROJECT_NAME}_mysql_database
     restart: unless-stopped
@@ -49,15 +49,15 @@ services:
     networks:
       - ${COMPOSE_PROJECT_NAME}-network
     ports:
-      - "8299:3306"
+      - "${MYSQL_PORT}:3306"
 
-  #Visit local phpmyadmin at: http://127.0.0.1:8282/
+  # Visit local phpMyAdmin at: http://127.0.0.1:${PHPMYADMIN_PORT}/
   phpmyadmin:
     image: phpmyadmin
     container_name: ${COMPOSE_PROJECT_NAME}_database_phpmyadmin
     restart: unless-stopped
     ports:
-      - 8282:80
+      - "${PHPMYADMIN_PORT}:80"
     networks:
       - ${COMPOSE_PROJECT_NAME}-network
     environment:
@@ -75,9 +75,9 @@ services:
     networks:
       - ${COMPOSE_PROJECT_NAME}-network
     ports:
-      - "6279:6379"
+      - "${REDIS_PORT}:6379"
 
-  #Access Redis commander at: http://localhost:8283/
+  # Access Redis Commander at: http://localhost:${REDIS_COMMANDER_PORT}/
   redis-commander:
     container_name: ${COMPOSE_PROJECT_NAME}_redis_commander
     hostname: redis-commander
@@ -88,28 +88,28 @@ services:
     environment:
       - REDIS_HOSTS=Database:cache:6379:0,Cache:cache:6379:1,Queue:cache:6379:2
     ports:
-      - "8283:8081"
+      - "${REDIS_COMMANDER_PORT}:8081"
     networks:
       - ${COMPOSE_PROJECT_NAME}-network
 
-  #Visit local mail at: http://127.0.0.1:8284/
+  # Visit local mail at: http://127.0.0.1:${SMTP_MAIL_PORT}/
   mail:
     container_name: ${COMPOSE_PROJECT_NAME}_local_mail
     image: rnwood/smtp4dev:3.1.3-ci20211206101
     restart: unless-stopped
     ports:
-      - "8284:80"
+      - "${SMTP_MAIL_PORT}:80"
     volumes:
       - mail:/smtp4dev
     networks:
       - ${COMPOSE_PROJECT_NAME}-network
 
-#Docker Networks
+# Docker Networks
 networks:
   laranuxt-network:
     driver: bridge
 
-#Volumes
+# Volumes
 volumes:
   dbdata:
     driver: local
