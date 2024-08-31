@@ -26,9 +26,6 @@ class SendEmailVerificationRequest extends FormRequest
             'id' => [
                 'required',
                 'exists:users,id',
-                /*Rule::exists('users')->where(function ($query) {
-                    $query->whereNull('email_verified_at');
-                }),*/
             ],
             'email' => 'required|email',
         ];
