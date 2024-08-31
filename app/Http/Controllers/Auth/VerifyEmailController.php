@@ -35,9 +35,10 @@ class VerifyEmailController extends Controller
 
         Auth::login($user);
 
+        $email = $user->email;
         if ($request->user()->hasVerifiedEmail()) {
             Auth::logout();
-            return redirect()->to(config('app.frontend_url') . RouteServiceProvider::LOGIN . '?status=success&message=Your email is already verified.');
+            return redirect()->to(config('app.frontend_url') . RouteServiceProvider::LOGIN . '?status=success&email='. $email .'&message=Your email is already verified.');
         }
 
         if ($request->user()->markEmailAsVerified()) {
@@ -45,6 +46,6 @@ class VerifyEmailController extends Controller
         }
 
         Auth::logout();
-        return redirect()->to(config('app.frontend_url') . RouteServiceProvider::LOGIN . '?status=success&message=Your email has been successfully verified.');
+        return redirect()->to(config('app.frontend_url') . RouteServiceProvider::LOGIN . '?status=success&email='. $email .'&message=Your email has been successfully verified.');
     }
 }
