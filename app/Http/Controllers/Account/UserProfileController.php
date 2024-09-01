@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Models\UserEmailUpdate;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -21,7 +22,14 @@ class UserProfileController extends Controller
      */
     public function show(Request $request): JsonResponse
     {
-        return response()->json($request->user()->getVisibleProperties(), ResponseAlias::HTTP_OK);
+        $user = $request->user();
+        $responseData = $user->getVisibleProperties();
+
+        if ($emailUpdate = $user->emailUpdate()->first()) {
+            $responseData['email_update'] = $emailUpdate->getVisibleProperties();
+        }
+
+        return response()->json($responseData, ResponseAlias::HTTP_OK);
     }
 
     /**
@@ -35,18 +43,14 @@ class UserProfileController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            // Add more validation rules as needed
         ]);
         $user->name = $request->input('name');
-        // Update other fields as needed
 
         $user->save();
 
         if ($user->email !== $request->input('email')) {
-            // Generate a unique token for verification
             $token = Str::random(32);
 
-            // Store the user email update in the database
             $userEmailUpdate = UserEmailUpdate::create([
                 'user_id' => $user->id,
                 'old_email' => $user->email,
@@ -61,7 +65,13 @@ class UserProfileController extends Controller
             ? 'Profile updated successfully. Please check your email to verify your new address.'
             : 'Profile updated successfully.';
 
-        return response()->json(['message' => $message, 'data' => $user->getVisibleProperties()], ResponseAlias::HTTP_OK);
+        $responseData = $user->getVisibleProperties();
+
+        if ($emailUpdate = $user->emailUpdate()->first()) {
+            $responseData['email_update'] = $emailUpdate->getVisibleProperties();
+        }
+
+        return response()->json(['message' => $message, 'data' => $responseData], ResponseAlias::HTTP_OK);
     }
 
     /**

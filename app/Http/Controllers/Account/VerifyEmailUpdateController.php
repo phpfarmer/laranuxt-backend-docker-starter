@@ -16,7 +16,7 @@ class VerifyEmailUpdateController extends Controller
      */
     public function __invoke(VerifyEmailUpdateRequest $request): RedirectResponse
     {
-        $pendingUpdate = UserEmailUpdate::findOrFail($request->route('id'));
+        $pendingUpdate = UserEmailUpdate::find($request->route('id'));
         if ($pendingUpdate) {
             if (!$pendingUpdate->hasVerifiedEmail()) {
                 $pendingUpdate->markEmailAsVerified();
@@ -25,21 +25,23 @@ class VerifyEmailUpdateController extends Controller
                 $pendingUpdate->user->save();
 
                 $pendingUpdate->user->markEmailAsVerified();
+                event(new Verified($request->user()));
+
+                $redirectUrl = config('app.frontend_url') . RouteServiceProvider::HOME . '?success=1&message=' . urlencode('Your email address has been successfully verified.');
+                return redirect()->intended($redirectUrl);
             }
         }
 
         if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->intended(
-                config('app.frontend_url') . RouteServiceProvider::HOME . '?verified=1'
-            );
+            $redirectUrl = config('app.frontend_url') . RouteServiceProvider::HOME . '?success=0&message=' . urlencode('Email verification failed or is already verified.');
+            return redirect()->intended($redirectUrl);
         }
 
         if ($request->user()->markEmailAsVerified()) {
             event(new Verified($request->user()));
         }
 
-        return redirect()->intended(
-            config('app.frontend_url') . RouteServiceProvider::HOME . '?verified=1'
-        );
+        $redirectUrl = config('app.frontend_url') . RouteServiceProvider::HOME . '?success=1&message=' . urlencode('Your email address has been successfully verified.');
+        return redirect()->intended($redirectUrl);
     }
 }
