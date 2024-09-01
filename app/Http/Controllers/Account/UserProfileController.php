@@ -57,7 +57,11 @@ class UserProfileController extends Controller
             $userEmailUpdate->sendEmailVerificationNotification();
         }
 
-        return response()->json(['message' => 'Profile updated successfully', 'data' => $user->getVisibleProperties()], ResponseAlias::HTTP_OK);
+        $message = $user->email !== $request->input('email')
+            ? 'Profile updated successfully. Please check your email to verify your new address.'
+            : 'Profile updated successfully.';
+
+        return response()->json(['message' => $message, 'data' => $user->getVisibleProperties()], ResponseAlias::HTTP_OK);
     }
 
     /**
