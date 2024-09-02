@@ -95,6 +95,6 @@ class UserProfileController extends Controller
 
         $user->delete();
 
-        return response()->json(['message' => __('Your account password updated successfully')], ResponseAlias::HTTP_OK);
+        return response()->json(['message' => __('Your account has been deleted successfully')], ResponseAlias::HTTP_OK);
     }
 }
