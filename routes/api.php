@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Account\EmailVerificationNotificationController;
 use App\Http\Controllers\Account\PasswordChangeController;
 use App\Http\Controllers\Account\UserProfileController;
 use Illuminate\Support\Facades\Route;
@@ -20,5 +21,11 @@ Route::prefix('account')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/profile', [UserProfileController::class, 'show']);
     Route::post('/profile', [UserProfileController::class, 'store']);
     Route::post('/password-change', PasswordChangeController::class);
+    Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
+        ->middleware(['throttle:6,1'])
+        ->name('account.verification.send');
+    Route::delete('/email/verification-notification', [EmailVerificationNotificationController::class, 'destroy'])
+        ->middleware(['throttle:6,1'])
+        ->name('account.verification.destroy');
 });
 
