@@ -20,6 +20,15 @@ class RouteServiceProvider extends ServiceProvider
     public const HOME = '/account/dashboard';
 
     /**
+     * The path to the "login" route for your application.
+     *
+     * Typically, users are redirected here after verifying their email address.
+     *
+     * @var string
+     */
+    public const LOGIN = '/auth/login';
+
+    /**
      * Define your route model bindings, pattern filters, and other route configuration.
      */
     public function boot(): void

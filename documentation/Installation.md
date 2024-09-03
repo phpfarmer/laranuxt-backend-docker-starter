@@ -3,7 +3,7 @@
 ## Installation
 
 Please check the official laravel installation
-guide. [Official Documentation](https://laravel.com/docs/10.x/installation)
+guide. [Official Documentation](https://laravel.com/docs/11.x/installation)
 
 Check and make sure you copied the `.env.example` to `.env` or it is already exists.
 
@@ -22,6 +22,8 @@ cp .env.example .env
 ```
 
 Whatever is the MySQL credentials you used needs to be used on application directory `/.env` file accordingly.
+
+You can follow the step-by-step installation guide here: [Example Installation](Installation-Example.md)
 
 If it is first time building docker container, run below command to Build images before starting containers.
 
@@ -112,8 +114,12 @@ If you are successfully done the initial setup, you should see all the container
 - `docker kill container-name` - Forcefully stop a running container.
 - `docker restart container-name` - Restart a container.
 - `docker rm container-name` - Remove a stopped container.
-- `docker cp ~/Desktop/staging/database.sql laranuxt_mysql_database:/root/database.sql` - Copying a database inside
-  MySQL container to import it from inside the container later.
+- `docker cp ~/Desktop/staging/database.sql laranuxt_mysql_database:/root/database.sql` - Copying a database inside MySQL container to import it from inside the container later.
+- `docker system prune -a` - Removes all unused images, containers, networks, and dangling data.
+- `docker ps -a --filter "name=laranuxt_"` - List all the containers prefixed with "laranuxt_".
+- `docker stop $(docker ps -q --filter "name=laranuxt_")` - Stops all running containers with names starting with "laranuxt_".
+- `docker rm $(docker ps -a -q --filter "name=laranuxt_")` - Removes all stopped containers with names starting with "laranuxt_".
+- `docker rm -f $(docker ps -a -q --filter "name=laranuxt_")` - Forces the removal of all containers (including running ones) with names starting with "laranuxt_".
 
 ## Stop all running container of the project
 
@@ -123,10 +129,10 @@ docker-compose down
 
 ## Visit different container on browser
 
-- [Application](http://127.0.0.1:8089)
-- [PHPMyAdmin](http://127.0.0.1:8088)
-- [Local SMTP4DEV](http://127.0.0.1:8087)
-- [Redis Commander](http://127.0.0.1:8086)
+- [Application](http://127.0.0.1:8281)
+- [PHPMyAdmin](http://127.0.0.1:8282)
+- [Redis Commander](http://127.0.0.1:8283)
+- [Local SMTP4DEV](http://127.0.0.1:8284)
 
 ### Documentation & Collaborations
 
