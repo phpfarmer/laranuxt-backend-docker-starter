@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Notifications\UserEmailUpdateVerification;
+use App\Traits\PropertyVisibilityTrait;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Database\Eloquent\Model;
@@ -11,11 +12,13 @@ use Illuminate\Notifications\Notifiable;
 
 class UserEmailUpdate extends Model implements MustVerifyEmailContract
 {
-    use Notifiable, SoftDeletes, MustVerifyEmail;
+    use Notifiable, SoftDeletes, MustVerifyEmail, PropertyVisibilityTrait;
 
     protected $table = 'user_email_updates';
 
     protected $fillable = ['user_id', 'old_email', 'email', 'token'];
+
+    protected array $visibleProperties = ['email'];
 
     /**
      * The attributes that should be hidden for serialization.
