@@ -5,6 +5,9 @@ namespace Tests\Feature\Auth;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class AuthenticationTest extends TestCase
 {
@@ -12,17 +15,29 @@ class AuthenticationTest extends TestCase
 
     public function test_users_can_authenticate_using_the_login_screen(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'password' => Hash::make('password'),
+        ]);
 
-        $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class);
-
-        $response = $this->post('/login', [
+        $response = $this->postJson('/login', [
             'email' => $user->email,
             'password' => 'password',
         ]);
 
         $this->assertAuthenticated();
-        $response->assertNoContent();
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJsonStructure([
+            'message',
+            'access_token',
+            'token_type',
+        ]);
+
+        // Optionally, check for specific message
+        $response->assertJson([
+            'message' => 'Login successful',
+        ]);
     }
 
     public function test_users_can_not_authenticate_with_invalid_password(): void
